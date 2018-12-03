@@ -1,0 +1,1 @@
+A quick and dirty pipeline for creating models for SamplePsychic with WekaMine
