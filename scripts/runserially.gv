@@ -1,0 +1,11 @@
+#!/usr/bin/env groovy 
+
+
+// Read in a file of commands and execute each command in turn..
+import grapnel.util.*
+RunBash.enable()
+
+new File(args[0]).eachLine{line->
+	println line
+	"$line".bash()
+}

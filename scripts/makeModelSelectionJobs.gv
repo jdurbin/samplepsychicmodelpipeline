@@ -1,0 +1,39 @@
+#!/usr/bin/env groovy
+
+//  A simple script simply to generate a list of commands to be run from the command line. 
+//  Could do this a million different ways, even manually.  
+import grapnel.util.*
+
+data = args[0]
+clin = args[1]   
+outroot = args[2]
+
+//outroot = "./raw/"
+cfgroot = "do_one"
+cfg = "$outroot/cfg/${cfgroot}.cfg"
+
+
+new File(clin).withReader{r->
+	heading = r.readLine() // just consume it		
+	r.splitEachLine("\t"){fields->	
+		cluster = fields[0]	
+			
+		out = "${outroot}/raw/${cfgroot}_${cluster}"
+		data = "${outroot}/data_subsample/${cluster}_2_1.tab"
+		clin = "${outroot}/data_subsample/${cluster}_2_1_meta.tab"
+
+		cmd = "wmModelSelection -o $out -d $data -i $clin -c $cfg -v 5"
+    	println cmd
+	}
+}
+
+/*
+
+wmModelSelection -o raw/phase1_fetal_cluster_0 -d /hive/users/james/wmm/BrainOfCells/version4/data_subsample//fetal_cluster_0_2_1.tab -i /hive/users/james/wmm/BrainOfCells/version4/data_subsample//fetal_cluster_0_2_1_class.tab -c ../cfg/phase1.cfg -v 10
+
+time wmModelSelection -o raw/phase1_fetal_cluster_0
+-d /hive/users/james/wmm/BrainOfCells/version4/data_subsample//fetal_cluster_0_2_1.tab
+-i /hive/users/james/wmm/BrainOfCells/version4/data_subsample//fetal_cluster_0_2_1_class.tab
+-c ../cfg/phase1.cfg -v 10
+
+*/ 

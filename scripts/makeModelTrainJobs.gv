@@ -1,0 +1,51 @@
+#!/usr/bin/env groovy
+
+
+import grapnel.util.*
+
+data = args[0]
+clin = args[1]   
+outroot = args[2]
+resultsFile = args[3]
+
+def results = [:]
+new OnlineTable(resultFile).eachRow{row->
+	def classAt = row.classAttr as String
+	results[classAt] = row
+}
+
+//expDir = "/projects/sysbio/users/apblair/cell_data/BRAIN2"
+//outRoot = "/projects/sysbio/users/apblair/cell_data/BRAIN2/models/"
+
+// Just use bootstrap null model for now. 
+// nullSamplesFile = "${expDir}/data/fetal/cleanedGeneMatrix_fetal_expressed_genes_t.tab"
+
+new File(clin).withReader{r->
+	heading = r.readLine() // just consume it		
+	r.splitEachLine("\t"){fields->	
+		cluster = fields[0]	
+
+		data = "${outroot}/data_subsample/${cluster}_2_1.tab"
+		clin = "${outroot}/data_subsample/${cluster}_2_1_meta.tab"
+
+		expSpec = results[classAt]
+		if (expSpec == null){
+			System.err.println "No spec for: "+cluster
+			return;
+		}	
+		expSpec = expSpec.values().join("\t")
+
+		// Save experiment specs to a file because parasol doesn't like quotes (or maybe commas)
+		// in it's input.
+		expStrFileName = "${outroot}/data_subsample/${cluster}_2_1.exp"
+
+		// Could specify a null file.. For the moment, just use bootstrap. 
+		//	cmd = "wmTrainModel -N -o $outroot -d $data -i $clin -e $expStrFileName -n $nullSamplesFile"
+		cmd = "wmTrainModel -N -o ${outroot}/models -d $data -i $clin -e $expStrFileName -B 1000"
+		println cmd
+
+		new File(expStrFileName).withWriter{w->
+			w.writeLine("$expSpec")
+		}
+	}
+}

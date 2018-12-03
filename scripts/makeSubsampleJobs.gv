@@ -1,0 +1,28 @@
+#!/usr/bin/env groovy
+
+//  A simple script simply to generate a list of commands to be run from the command line. 
+//  Could do this a million different ways, even manually.  
+
+import grapnel.util.*
+
+
+// 
+// ./scripts/makeSubsampleJobs.gv $(EXPRESSION) $(METADATA) $(SUBSAMPLE_OUT) > subsample.jobs
+
+// Data and clinical files for subsampling...
+data = args[0]
+clin = args[1]   
+outroot = args[2]
+
+// write out the command to generate that subsample. 
+// list of commands can be run through cluster jobs. 
+// Default Subsample does a 2:1 ratio cap for target vs off-target. 
+//clusters.each{cluster->
+new File(clin).withReader{r->
+	heading = r.readLine() // just consume it
+		
+	r.splitEachLine("\t"){fields->	
+		cluster = fields[0]
+		println "wmSubsample -d $data -i $clin -C ${cluster} -o ${outroot}/data_subsample/${cluster}_2_1.tab"
+	}
+}
