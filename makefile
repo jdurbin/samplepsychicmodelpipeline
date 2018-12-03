@@ -10,7 +10,14 @@ EXPRESSION=$(OUTPUT_ROOT)/data/exprMatrix.tsv  		# Expression data in genes (row
 # subsequent file creation steps.  
 METADATA=$(OUTPUT_ROOT)/data/meta_dichotomized.tsv	
 
-
+# The cfg file indicates what model selection experiments to perform.  
+# do_one just tries one algortim, RandomForest. 
+# To try a bigger range of algorithms you can use a different config. 
+# I usually have multiple configs that don't overlap so I can try things in 
+# phases, thus phase1, phase2, etc.   Results in raw/ are prefixed with the 
+# config name so that these phases don't blow away previous phases.  
+# CFGROOT=phase1
+CFGROOT=do_one
 
 # Make all will perform all the steps needed to subsample, select a models, train models. 
 all: clean subsamplejobs modelselectionjobs bestmodels modeltrainjobs
@@ -39,13 +46,13 @@ subsamplejobs:
 #  14 minutes
 modelselectionjobs:
 	mkdir -p raw
-	mkdir -p results
 	./scripts/makeModelSelectionJobs.gv $(EXPRESSION) $(METADATA) $(OUTPUT_ROOT) > modelselection.jobs
 	./scripts/runserially.gv modelselection.jobs
 
 # Figure out which of the algorithms/hyperparameters is best for each class attribute. 
 # In the do_one.cfg we only consider one, so this step doesn't do much. 
 bestmodels:
+	mkdir -p results
 	wmBestModels raw/*summary* > results/best.tab
 
 # Took about 7 minutes. 

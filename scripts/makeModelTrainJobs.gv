@@ -9,10 +9,12 @@ outroot = args[2]
 resultsFile = args[3]
 
 def results = [:]
-new OnlineTable(resultFile).eachRow{row->
+new OnlineTable(resultsFile).eachRow{row->
 	def classAt = row.classAttr as String
 	results[classAt] = row
 }
+
+System.err.println results
 
 //expDir = "/projects/sysbio/users/apblair/cell_data/BRAIN2"
 //outRoot = "/projects/sysbio/users/apblair/cell_data/BRAIN2/models/"
@@ -28,7 +30,7 @@ new File(clin).withReader{r->
 		data = "${outroot}/data_subsample/${cluster}_2_1.tab"
 		clin = "${outroot}/data_subsample/${cluster}_2_1_meta.tab"
 
-		expSpec = results[classAt]
+		expSpec = results[cluster]
 		if (expSpec == null){
 			System.err.println "No spec for: "+cluster
 			return;
