@@ -43,7 +43,7 @@ new File(clin).withReader{r->
 
 		// Could specify a null file.. For the moment, just use bootstrap. 
 		//	cmd = "wmTrainModel -N -o $outroot -d $data -i $clin -e $expStrFileName -n $nullSamplesFile"
-		cmd = "wmTrainModel -N -o ${outroot}/models -d $data -i $clin -e $expStrFileName -B 1000"
+		cmd = "wmTrainModel -N -o ${outroot}/models/ -d $data -i $clin -e $expStrFileName -B 1000"
 		println cmd
 
 		new File(expStrFileName).withWriter{w->
