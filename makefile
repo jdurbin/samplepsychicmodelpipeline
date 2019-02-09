@@ -1,7 +1,7 @@
 
 
 # Path where all other files should be found.   
-OUTPUT_ROOT=/Users/james/ucsc/exp/singlecellpipeline/BRAIN2/
+OUTPUT_ROOT=/Users/james/ucsc/exp/debugpipeline/samplepsychicmodelpipeline
 
 EXPRESSION=$(OUTPUT_ROOT)/data/exprMatrix.tsv  		# Expression data in genes (rows) x samples (cols) tab file
 
@@ -28,6 +28,7 @@ clean:
 	rm -rf raw
 	rm -rf results
 	rm -rf models
+	rm -f *.jobs
 
 # This data is highly imbalanced.  Classifiers can handle some 
 # imbalance in the training classes, but when it gets too large
